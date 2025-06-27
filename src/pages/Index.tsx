@@ -1,12 +1,73 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from 'react';
+import { Header } from '@/components/Header';
+import { HeroSection } from '@/components/HeroSection';
+import { ProductCatalog } from '@/components/ProductCatalog';
+import { AIAssistant } from '@/components/AIAssistant';
+import { Footer } from '@/components/Footer';
+import { ShoppingCart } from '@/components/ShoppingCart';
+import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const addToCart = (product: any) => {
+    setCartItems(prev => {
+      const existingItem = prev.find((item: any) => item.id === product.id);
+      if (existingItem) {
+        return prev.map((item: any) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCartItems(prev => prev.filter((item: any) => item.id !== productId));
+  };
+
+  const updateQuantity = (productId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    setCartItems(prev =>
+      prev.map((item: any) =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+    );
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <Header 
+        cartItemsCount={cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0)}
+        onCartClick={() => setIsCartOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+      <HeroSection />
+      <ProductCatalog 
+        onAddToCart={addToCart}
+        searchQuery={searchQuery}
+      />
+      <AIAssistant />
+      <Footer />
+      
+      <ShoppingCart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        onRemove={removeFromCart}
+        onUpdateQuantity={updateQuantity}
+      />
+      
+      <Toaster />
     </div>
   );
 };
