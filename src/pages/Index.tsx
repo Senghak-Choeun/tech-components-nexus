@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
-import { ProductCatalog } from '@/components/ProductCatalog';
-import { AIAssistant } from '@/components/AIAssistant';
+import { EnhancedProductCatalog } from '@/components/EnhancedProductCatalog';
+import { PrachnaAI } from '@/components/PrachnaAI';
 import { Footer } from '@/components/Footer';
-import { ShoppingCart } from '@/components/ShoppingCart';
+import { ImprovedShoppingCart } from '@/components/ImprovedShoppingCart';
 import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
@@ -43,6 +43,10 @@ const Index = () => {
     );
   };
 
+  const handleSearchProduct = (query: string) => {
+    setSearchQuery(query);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Header 
@@ -52,14 +56,17 @@ const Index = () => {
         onSearchChange={setSearchQuery}
       />
       <HeroSection />
-      <ProductCatalog 
+      <EnhancedProductCatalog 
         onAddToCart={addToCart}
         searchQuery={searchQuery}
       />
-      <AIAssistant />
+      <PrachnaAI 
+        onAddToCart={addToCart}
+        onSearchProduct={handleSearchProduct}
+      />
       <Footer />
       
-      <ShoppingCart
+      <ImprovedShoppingCart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         items={cartItems}
